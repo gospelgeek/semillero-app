@@ -103,10 +103,15 @@ export default function Home() {
         variant: 'warning',
       });
     } else {
-      const result = await searchPerson(documentToSearch);
-      if (result) {
-        setEditing(true);
-        setShowForm(true);
+      try {
+        const result = await searchPerson(documentToSearch);
+      
+        if (result !== 'null') {
+          setEditing(true);
+          setShowForm(true);
+        }
+      } catch (e) {
+        console.log(e)
       }
     }
   }

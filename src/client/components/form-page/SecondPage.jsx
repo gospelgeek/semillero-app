@@ -153,7 +153,7 @@ export default function SecondPage({
           <Grid item md={6}>
             <FormInput
               label="Numero de recibo."
-              helperText="ID transacción, Numero de referenca o CUS"
+              helperText="N° del desprendible, Consecutivo de comercio, ID transacción o CUS"
               name={'recibo_consignacion'}
               {...formik}
             />
