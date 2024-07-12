@@ -12,7 +12,8 @@ import {
   getHeadersFromSheet,
   jsonToSheetValues,
   getCourseActiveByPeriod,
-  getLenghtModuleActive
+  getLenghtModuleActive,
+  listModulesByUser
 } from './sheets';
 
 import { createPersonFile, uploadStudentFiles } from './drive';
@@ -67,5 +68,6 @@ export {
   getHeadersFromSheet,
   jsonToSheetValues,
   getCourseActiveByPeriod,
-  getLenghtModuleActive
+  getLenghtModuleActive,
+  listModulesByUser
 };

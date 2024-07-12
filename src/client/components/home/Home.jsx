@@ -8,7 +8,7 @@ import Navbar from '../navbar/Navbar';
 import { mockData, mockDataByGrade } from '../../mock-data';
 import { serverFunctions as API } from '../../utils/serverFunctions';
 import Report from './Report';
-
+import ModuleSelect from '../form-page/ModuleSelect';
 const isDev = process.env.NODE_ENV === 'development';
 
 const Messages = {
@@ -28,6 +28,8 @@ export default function Home() {
   const [modulesByArea, setModulesByArea] = useState([]);
   const [modulesByGrade, setModulesByGrade] = useState([]);
   const [editing, setEditing] = useState(false);
+  const [isShowModules, setIsShowModules] = useState(false);
+  const [listDataModule, setListDataModule] = useState([]);
   const { openAlert } = useAlertDispatch();
   const errorHandler = useErrorHandler();
 
@@ -107,8 +109,16 @@ export default function Home() {
         const result = await searchPerson(documentToSearch);
       
         if (result !== 'null') {
-          setEditing(true);
-          setShowForm(true);
+          setIsShowModules(true)
+          const modulesList = await API.listModulesByUser(documentToSearch)
+          if (modulesList?.length == 1) {
+            setEditing(true);
+            setShowForm(true);
+          }
+     
+          if (modulesList?.length >= 1) {
+            setListDataModule(modulesList)
+          }
         }
       } catch (e) {
         console.log(e)
@@ -201,7 +211,15 @@ export default function Home() {
         />
       )}
       {showLoader && <CircularIndeterminate />}
-      {!showForm && !showLoader && <Report data={reportData} />}
+      {!showForm && !isShowModules && !showLoader && <Report data={reportData} />}
+      {
+      (!showLoader && isShowModules && <ModuleSelect 
+        setEditing={setEditing}
+        setShowForm={setShowForm}
+        moduleData={listDataModule}
+        setIsShowModules={setIsShowModules}
+       />)
+      }
       {!showLoader && showForm && (
         <FormPage
           {...{

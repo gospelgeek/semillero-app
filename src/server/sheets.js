@@ -172,3 +172,21 @@ export function getLenghtModuleActive() {
       Logger.log(error);
     }
 }
+
+export function listModulesByUser(doc) {
+  let response = []
+  try {
+      const modules = sheetValuesToObject(getModules())
+      const data_student = sheetValuesToObject(getCurrentPeriodStudents())
+      const personData = data_student.filter((item) =>  {
+         return String(item.num_doc) == String(doc)
+      })
+      const search = personData.map(person => person.modulo)
+      modules.map((item) => {
+        if (search.includes(item.nombre)) response.push(item)
+      })
+  } catch (error) {
+    Logger.log(error);
+  }
+  return response
+}
