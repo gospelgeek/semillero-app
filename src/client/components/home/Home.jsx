@@ -30,10 +30,10 @@ export default function Home() {
   const [editing, setEditing] = useState(false);
   const [isShowModules, setIsShowModules] = useState(false);
   const [listDataModule, setListDataModule] = useState([]);
+  const [codeModule, setCodeModule] = useState('');
   const { openAlert } = useAlertDispatch();
   const errorHandler = useErrorHandler();
 
-  console.log('modules', modules);
   const authenticateCurrentUser = async () => {
     try {
       setLoading(true);
@@ -197,6 +197,15 @@ export default function Home() {
     init();
   }, []);
 
+  useEffect(() => {
+    if (codeModule !== '') {
+      setStudentData(prevState => ({
+        ...prevState,
+        seleccion: codeModule,
+    }));
+    }
+  }, [codeModule]);
+
   const showSearchBar = isUserAdmin || isDev;
   const showLoader = !isDev && loading;
   if (showLoader && !isUserAdmin) return <CircularIndeterminate />;
@@ -218,6 +227,7 @@ export default function Home() {
         setShowForm={setShowForm}
         moduleData={listDataModule}
         setIsShowModules={setIsShowModules}
+        setCodeModule={setCodeModule}
        />)
       }
       {!showLoader && showForm && (
