@@ -72,15 +72,10 @@ export default function FirstPage({setDocPerson, modules, ...formik }) {
   React.useEffect(() => {
     const { genero } = formik.values;
     const element = document.getElementById("space_of_genero");
+    const isGenderOther = genero === 'OTRO'
 
-    if(genero === 'OTRO'){
-      setIsOtherGender(true);
-      element.style.display = "none";
-    }
-    else {
-      setIsOtherGender(false);
-      element.style.display = "block";
-    }
+    setIsOtherGender(isGenderOther);
+    element.style.display = isGenderOther? "none": "block"
   }, [formik.values.genero]);
 
   return (

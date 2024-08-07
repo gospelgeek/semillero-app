@@ -37,7 +37,6 @@ export default function SecondPage({
   } = formik.values;
   const oldCourse = modules.find(m => m.nombre === curso_anterior);
   const [isDocente , setDocente] = React.useState(false);
-  // const [modulesToShow, setModulesToShow] = React.useState([])
 
   const valuesOptionsDocente = [
     { value: 'PARTICULAR', label: 'PARTICULAR' },
@@ -58,14 +57,6 @@ export default function SecondPage({
   React.useEffect( () => {
     setDocente(lowercaseGrade == 'docente');
   }, [lowercaseGrade])
-
-  React.useEffect(() => {
-    console.log(modulesByGrade , "actualizado")
-    // const modules_  = Object.entries(
-    //   (modulesByGrade || {})[lowercaseGrade] || {}
-    // );
-    // setModulesToShow(modules_)
-  },[modulesByGrade])
 
   return (
     <>

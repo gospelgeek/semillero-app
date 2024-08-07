@@ -182,7 +182,7 @@ function getDataForRegistering(formData, currentStudentData) {
   if (form.inscrito_anterior === 'SI') {
     form.inscrito_anterior = form.curso_anterior;
   }
-  const selectedModule = validateModule(form.seleccion);
+  const selectedModule = String(form.seleccion)
   const periods = getPersonPeriods(selectedModule, currentStudentData);
 
   const data = mergeObjects(

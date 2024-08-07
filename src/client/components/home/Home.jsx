@@ -108,7 +108,6 @@ export default function Home() {
       Object.entries(moduleResponse).forEach(([key, firstLevel]) => {
         Object.entries(firstLevel).forEach(([subKey, secondLevel]) => {
           const filteredSecondLevel = secondLevel.filter(module => {
-            console.log(module.nombre, listPre, listPre.includes(module.nombre), "aaaaaaaa")
             return (
               listPre.includes(module.prerrequisitos) ||
               module.prerrequisitos === ''
@@ -223,25 +222,23 @@ export default function Home() {
 
   const getPrerequisitesUser = async (doc) => {
     try {
-      const personResponse = await API.buscarPersona(doc);
-      const person = JSON.parse(personResponse || '{}')
-      const avaiblePeriods = await API.allPeriods();
-      let listAvaiblePrerequisite = []
+        const personResponse = await API.buscarPersona(doc);
+        const person = JSON.parse(personResponse || '{}')
+        const avaiblePeriods = await API.allPeriods();
+        let listAvaiblePrerequisite = []
 
-      if (!person || person === 'null' || !person?.data) return;
-      if (person?.data?.num_doc == '') return
+        if (!person || person === 'null' || !person?.data) return;
+        if (person?.data?.num_doc == '') return
 
-      Object.entries(person.data).forEach(([key, item]) => {
-        if (!avaiblePeriods.includes(key)) return
-        if (item === '-' || item === '') return
-        listAvaiblePrerequisite.push(item)
-      })
+        Object.entries(person.data).forEach(([key, item]) => {
+          if (!avaiblePeriods.includes(key)) return
+          if (item === '-' || item === '') return
+          listAvaiblePrerequisite.push(item)
+        })
 
-      if (listAvaiblePrerequisite.length <= 0) return
-      const modulesFilter = filterModulePrerequisites(modulesByGradeAux, listAvaiblePrerequisite)
-      console.log(modulesFilter, 'modulesFilter')
-      setModulesByGrade(modulesFilter);
-      console.log(person, avaiblePeriods, listAvaiblePrerequisite, 'iniciamos la ultima parte')
+        if (listAvaiblePrerequisite.length <= 0) return
+        const modulesFilter = filterModulePrerequisites(modulesByGradeAux, listAvaiblePrerequisite)
+        setModulesByGrade(modulesFilter);
     } catch (e) {
       console.log(e)
     }
