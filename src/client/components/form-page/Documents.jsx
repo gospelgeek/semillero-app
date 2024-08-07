@@ -27,6 +27,7 @@ export default function Documents({
   const isCapucho = convenio === 'RELACION_UNIVALLE';
   const isScholar = convenio === 'BECADOS';
   const isSchoolAgreement = convenio === 'CONVENIO_COLEGIO';
+  const isDocente = convenio === 'red_docente'
 
   const isGraduated = grado === 'EGRESADO';
   // const isLastPhase = grado === 11 || isGraduated;
@@ -48,17 +49,23 @@ export default function Documents({
 
   const isShortCourse = isModuleShortCourse(curso);
 
+  const handlerIIsConstance = () => {
+    let response = false
+    let isConstance = (!isShortCourse && !isSchoolAgreement && !isGraduated && !isFresita)
+    if (!isDocente) {
+      response = (isPublic || isCoverage || isScholar || isConstance)
+    }
+
+    return response
+  }
+
   const FormFiles = [
     { name: 'docFile', label: 'Documento Identidad', display: true },
     { name: 'reciboFile', label: 'Recibo de Pago', display: true },
     {
       name: 'constanciaEstudFile',
       label: 'Constancia Estudio',
-      display:
-        isPublic ||
-        isCoverage ||
-        isScholar ||
-        (!isShortCourse && !isSchoolAgreement && !isGraduated && !isFresita),
+      display: handlerIIsConstance()
     },
     {
       name: 'constanciaFuncFile',
@@ -74,6 +81,11 @@ export default function Documents({
       name: 'cartaSolicitud',
       label: 'Carta Solicitud',
       display: isScholar,
+    },
+    {
+      name: 'carnedocente',
+      label: 'Carné Red Docente',
+      display: isDocente,
     },
     { name: 'actaGrado', label: 'Acta Grado', display: isGraduated },
   ];

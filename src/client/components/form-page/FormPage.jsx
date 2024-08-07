@@ -23,6 +23,7 @@ export default function FormPage({
   modulesByArea,
   modulesByGrade,
   studentData = {},
+  setDocPerson
 }) {
   const [accepted, setAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -147,10 +148,16 @@ export default function FormPage({
     modulesByGrade,
     ...inputProps,
   };
+
+  const formPropsFirstPage = {
+    setDocPerson,
+    ...formProps,
+  }
+
   return (
     <>
-      <FirstPage {...formProps} />
-      <SecondPage {...formProps} />
+      <FirstPage {...formPropsFirstPage} />
+      <SecondPage {...formProps}/>
     </>
   );
 }

@@ -12,6 +12,8 @@ import {
   getCurrentPeriodStudents,
   getHeadersFromSheet,
   jsonToSheetValues,
+  getCourseActiveByPeriod,
+  listModulesByUser
 } from './sheets';
 
 const GENERAL_DB =
@@ -36,6 +38,8 @@ export function isAdmin() {
     'moreno.juan@correounivalle.edu.co',
     'garciamilton54@gmail.com',
     'ases.sistemas.regionales@correounivalle.edu.co',
+    'cristian.machado@correounivalle.edu.co',
+    'isabela.rosero@correounivalle.edu.co'
   ];
   Logger.log('guest');
   Logger.log(guest);
@@ -210,11 +214,13 @@ function validatePerson(cedula) {
   const result = {
     state: 'no esta',
     index: -1,
-    data: null,
-  };
-  const currentPeriod = getCurrentPeriod().periodo;
+    data: null
+  }; 
+  const currentPeriod = getCurrentPeriod().periodo;//aqui
   const textFinder = sheet.createTextFinder(cedula);
+
   const studentFound = textFinder.findNext();
+
   const studentIndex = studentFound ? studentFound.getRow() : -1;
   if (studentIndex <= -1) return result;
 
@@ -233,11 +239,10 @@ function validatePerson(cedula) {
   result.index = studentIndex;
   result.state = isFromCurrentPeriod ? 'actual' : 'antiguo';
   result.data = studentData;
-  Logger.log(result);
   Logger.log('=============END Validating Person===========');
   return result;
 }
-
+//aaa
 function editEstudentGeneral(student, studentIndex) {
   try {
     const inscritossheet = getSheetFromSpreadSheet(GENERAL_DB, 'INSCRITOS');
@@ -264,7 +269,7 @@ export function editStudent(serializedData) {
   const person = validatePerson(form.num_doc);
   const newData = getDataForRegistering(form, person);
 
-  editEstudentGeneral(newData, person.index);
+  return editEstudentGeneral(newData, person.index);
   // editStudentActualPeriod( newData );
 }
 
@@ -387,7 +392,15 @@ export function registerStudent(formString) {
     const isOldStudent = person.state === 'antiguo';
     const isCurrentStudent = person.state === 'actual';
     if (isCurrentStudent) {
-      throw new Error('Ya esta inscrito en este periodo');
+      const currentModuleSelected = String(form.seleccion) ?? ''
+      const moduleActive = getCurrentPeriodData().modules
+      const moduleFind = moduleActive.find((item) => String(item.codigo) == currentModuleSelected)
+      const modulesUser = listModulesByUser(form.num_doc)
+      
+      const isRepeatModule = modulesUser.find((item) => String(item.codigo) == currentModuleSelected)
+
+      if (isRepeatModule?.codigo) throw new Error('Ya esta inscrito en este periodo');
+      if (moduleFind.is_crossed != 'x') throw new Error('Ya esta inscrito en este periodo');
     }
     avoidCollisionsInConcurrentAccessess();
     const currentStudentData = isOldStudent ? person : null;
@@ -422,4 +435,15 @@ export function objectValuesToUpperCase(object, keys) {
     return acc;
   }, {});
   return mergeObjects(object, upperCaseValues);
+}
+
+export function listModulesByPerson(num_doc) {
+  return listModulesByUser(num_doc)
+}
+
+export function allPeriods() {
+  const values_ = getPeriods()
+  return values_.map((item) => {
+    return String(item?.periodo)
+  })
 }

@@ -27,6 +27,8 @@ export default function FormInput({
   errors,
   touched,
 }) {
+  const value__ = ((values[name] !== undefined && values[name] !== null)? (typeof values[name] === 'string')? (values[name]).toLowerCase() : values[name] : '')
+
   const isEmail = type === 'email';
   return (
     <TextField
@@ -37,7 +39,7 @@ export default function FormInput({
       disabled={disabled || isSubmitting}
       onBlur={handleBlur}
       onChange={handleChange}
-      value={values[name] || ''}
+      value={value__}
       type={type}
       error={!!touched[name] && !!errors[name]}
       variant="outlined"

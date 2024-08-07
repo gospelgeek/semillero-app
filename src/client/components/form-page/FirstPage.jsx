@@ -23,13 +23,18 @@ import {
   GOOGLE_URL,
   GradeOptions,
   SUPPORTED_IMAGE_FORMATS,
+  DiscapacidadOptions,
+  DiscapacidadOptionsAll
 } from './form-settings';
+// import { doc } from 'prettier';
 
 const createEmail = () => window.open(GOOGLE_URL);
 
-export default function FirstPage({ modules, ...formik }) {
+export default function FirstPage({setDocPerson, modules, ...formik }) {
   const [avatar, setAvatar] = useState(null);
   const errorHandler = useErrorHandler();
+  const [IsDesabilitado, setIsDesabilitado] = useState(false);
+  const [IsOtherGender, setIsOtherGender] = useState(false);
 
   const hasAnotherEPS = formik?.values?.eps === 'OTRA';
   const caliIsCali = formik?.values?.ciudad_res === 'Cali';
@@ -48,9 +53,43 @@ export default function FirstPage({ modules, ...formik }) {
     }
   }
 
+  React.useEffect(() => {
+    const { discapacidad } = formik.values;
+    if(discapacidad === 'SI'){
+      setIsDesabilitado(true);
+    }
+    else {
+      setIsDesabilitado(false);
+    }
+  } , [formik.values.discapacidad]);
+
+  React.useEffect(() => {
+    const { num_doc } = formik.values;
+    if (num_doc == '') return
+    setDocPerson(num_doc)
+  } , [formik.values.num_doc]);
+
+  React.useEffect(() => {
+    const { genero } = formik.values;
+    const element = document.getElementById("space_of_genero");
+
+    if(genero === 'OTRO'){
+      setIsOtherGender(true);
+      element.style.display = "none";
+    }
+    else {
+      setIsOtherGender(false);
+      element.style.display = "block";
+    }
+  }, [formik.values.genero]);
+
   return (
     <Card useRight={false}>
-      <Grid container spacing={3}>
+      <Grid sx={{ position: 'relative'}}
+            className='_container_principal' container spacing={3}>
+      {/* <div className='_container_logo_form'>
+        <img src="https://drive.google.com/uc?id=1N-iOqjZ-CNibL9txy7ULUCt3jXw_DQXc" alt="logo semillero" />
+      </div> */}
         <Grid
           item
           md={12}
@@ -144,12 +183,23 @@ export default function FirstPage({ modules, ...formik }) {
         <Grid item md={6}>
           <FormRadioGroup
             name="genero"
-            legend={'Genero'}
+            legend={'Género'}
             options={GenreOptions}
             {...formik}
           />
         </Grid>
-        <Grid item md={6}></Grid>
+        {
+          IsOtherGender && (
+            <Grid item md={6}>
+              <FormInput
+                label="Otro Genero"
+                name={'otro_genero'}
+                {...formik}
+              />
+          </Grid>
+          )
+        }
+        <Grid id="space_of_genero" item md={6}></Grid>
         <Grid item md={6}>
           <FormDateInput
             label="Fecha Nacimiento"
@@ -226,7 +276,7 @@ export default function FirstPage({ modules, ...formik }) {
         </Grid>
         <Grid item md={6}>
           <FormInput
-            label="Nombre Acudiente"
+            label="Nombre Acudiente o Contacto"
             name={'nombre_acudiente'}
             {...formik}
           />
@@ -238,6 +288,33 @@ export default function FirstPage({ modules, ...formik }) {
             {...formik}
           />
         </Grid>
+        <Grid item md={6}>
+          <FormSelect
+            options={DiscapacidadOptions}
+            label="Discapacidad"
+            name={'discapacidad'}
+            {...formik}
+          />
+        </Grid>
+        {
+          IsDesabilitado && (<>
+            <Grid item md={3}>
+              <FormSelect
+                options={DiscapacidadOptionsAll}
+                label="Tipo De Discapacidad"
+                name={'tipo_discapacidad'}
+                {...formik}
+              />
+            </Grid>
+            <Grid item md={3}>
+              <FormInput
+                label="Informacion Discapacidad"
+                name={'info_discapacidad'}
+                {...formik}
+              />
+            </Grid></>
+          )
+        }
         <Grid item md={6}>
           <FormSwitch
             label="Se ha inscrito antes en algun curso?"

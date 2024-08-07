@@ -14,10 +14,15 @@ export const GOOGLE_URL =
   'https://accounts.google.com/SignUp?service=mail&hl=es&continue=http%3A%2F%2Fmail.google.com%2Fmail%2F%3Fpc%3Des-ha-latam-co-bk-xplatform1&utm_campaign=es&utm_source=es-ha-latam-co-bk-xplatform1&utm_medium=ha';
 
 export const DocumentTypeOptions = [
-  { value: 'T.I', label: 'T.I' },
-  { value: 'C.C', label: 'C.C' },
-  { value: 'C.E', label: 'Cedula de Extrangería' },
-  { value: 'R.C', label: 'Registro Civil' },
+  { value: 'T.I', label: 'T.I.' },
+  { value: 'C.C', label: 'C.C.' },
+  { value: 'C.E', label: 'C.E.' },
+  { value: 'R.C', label: 'NUIP' },
+];
+
+export const DocumentTypeOptionsAcudiente = [
+  { value: 'C.C', label: 'C.C.' },
+  { value: 'C.E', label: 'C.E' },
 ];
 
 export const GenreOptions = [
@@ -26,15 +31,37 @@ export const GenreOptions = [
   { value: 'OTRO', label: 'Otro' },
 ];
 
+export const DiscapacidadOptions = [
+  { value: 'NO', label: 'No' },
+  { value: 'SI', label: 'Si' },
+];
+
+export const DiscapacidadOptionsAll = [
+  { value: "Auditiva" , label: "Auditiva" },
+  { value: "Fisica" , label: "Fisica" },
+  { value: "Intelectual" , label: "Intelectual" },
+  { value: "Visual" , label: "Visual" },
+  { value: "Sordoceguera" , label: "Sordoceguera" },
+  { value: "Psicosocial" , label: "Psicosocial" },
+  { value: "Multiple" , label: "Multiple" }
+]
+
 export const EPSOptions = EPSs.map(eps => ({ value: eps, label: eps }));
 
 export const NumberOfSchoolGrades = 11;
 
 export const GradeOptions = Array.from(
-  { length: NumberOfSchoolGrades + 1 },
+  { length: NumberOfSchoolGrades + 2 },
   (_, i) => {
     const isLast = i === NumberOfSchoolGrades;
     const grade = i + 1;
+    // todo: Mejorar para Isabela
+    if (i >= (NumberOfSchoolGrades+1)) {
+      return {
+        value: 'DOCENTE',
+        label: 'Docente',
+      };
+    }
     return {
       value: isLast ? 'EGRESADO' : grade,
       label: isLast ? 'Egresado colegios' : `${grade}°`,
@@ -57,6 +84,7 @@ export const filesByName = [
   'recibosPublicos',
   'cartaSolicitud',
   'actaGrado',
+  'carnedocente'
 ];
 
 export function checkIfFileIsTooBig(file) {
@@ -115,6 +143,12 @@ export const initialValues = {
   recibosPublicos: '',
   cartaSolicitud: '',
   actaGrado: '',
+  tipo_doc_acudiente: '',
+  num_doc_acudiente: '',
+  direc_accudiente: '',
+  facturacion_email: '',
+  discapacidad: '',
+  carnedocente: ''
 };
 
 export const testValues = {
@@ -242,6 +276,10 @@ export const validationSchema = Yup.object({
     is: val => ['BECADOS'].includes(val),
     then: setFileRequired,
   }),
+  carnedocente:Yup.mixed().when(['convenio'], {
+    is: val => ['red_docente'].includes(val),
+    then: setFileRequired,
+  }),
   cartaSolicitud: Yup.mixed().when(['convenio'], {
     is: val => ['BECADOS'].includes(val),
     then: setFileRequired,
@@ -250,4 +288,10 @@ export const validationSchema = Yup.object({
     is: val => ['EGRESADO'].includes(val),
     then: setFileRequired,
   }),
+  tipo_doc_acudiente: Yup.string().required(Texts.requiredFields),
+  num_doc_acudiente: Yup.string().required(Texts.requiredFields),
+  direc_accudiente: Yup.string().required(Texts.requiredFields),
+  facturacion_email: Yup.string()
+  .matches(UnivalleRegex, Texts.invalidEmail)
+  .required(Texts.requiredFields)
 });
