@@ -36,6 +36,7 @@ import {
   buscarPersona,
   getReportData,
   registerStudent,
+  allPeriods
 } from './app';
 
 export {
@@ -69,5 +70,6 @@ export {
   jsonToSheetValues,
   getCourseActiveByPeriod,
   getLenghtModuleActive,
-  listModulesByUser
+  listModulesByUser,
+  allPeriods
 };

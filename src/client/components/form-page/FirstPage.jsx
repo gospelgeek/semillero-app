@@ -30,7 +30,7 @@ import {
 
 const createEmail = () => window.open(GOOGLE_URL);
 
-export default function FirstPage({ modules, ...formik }) {
+export default function FirstPage({setDocPerson, modules, ...formik }) {
   const [avatar, setAvatar] = useState(null);
   const errorHandler = useErrorHandler();
   const [IsDesabilitado, setIsDesabilitado] = useState(false);
@@ -62,6 +62,12 @@ export default function FirstPage({ modules, ...formik }) {
       setIsDesabilitado(false);
     }
   } , [formik.values.discapacidad]);
+
+  React.useEffect(() => {
+    const { num_doc } = formik.values;
+    if (num_doc == '') return
+    setDocPerson(num_doc)
+  } , [formik.values.num_doc]);
 
   React.useEffect(() => {
     const { genero } = formik.values;

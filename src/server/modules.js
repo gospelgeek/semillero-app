@@ -26,7 +26,7 @@ const CURRENT_PERIOD_COLUMNS = [
 export function getModulesByGrades() {
   const rawModules = getModules();
   let modules = sheetValuesToObject(rawModules);
-  const allowedColumns = ['nombre', 'codigo', 'area', 'prueba'];
+  const allowedColumns = ['nombre', 'codigo', 'area', 'prueba', 'prerrequisitos'];
   modules = modules.reduce((acc, module) => {
     const newModule = { ...module };
     if (newModule.disabled === 'x') return acc;
@@ -55,6 +55,7 @@ export function getModulesByGrades() {
         nombre: module.nombre,
         codigo: module.codigo,
         prueba: module.prueba,
+        prerrequisitos: module.prerrequisitos
       });
     });
     return prevModules;

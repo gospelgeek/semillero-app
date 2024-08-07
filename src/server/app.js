@@ -437,7 +437,13 @@ export function objectValuesToUpperCase(object, keys) {
   return mergeObjects(object, upperCaseValues);
 }
 
-
 export function listModulesByPerson(num_doc) {
   return listModulesByUser(num_doc)
+}
+
+export function allPeriods() {
+  const values_ = getPeriods()
+  return values_.map((item) => {
+    return String(item?.periodo)
+  })
 }

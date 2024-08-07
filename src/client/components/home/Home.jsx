@@ -22,15 +22,17 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [studentData, setStudentData] = useState(null);
-  const [reportData, setReportData] = useState({'reporte_': [] , 'total_inscritos': 0});
+  const [reportData, setReportData] = useState({ 'reporte_': [], 'total_inscritos': 0 });
   const [modules, setModules] = useState([]);
   const [currentPeriod, setCurrentPeriod] = useState(null);
   const [modulesByArea, setModulesByArea] = useState([]);
   const [modulesByGrade, setModulesByGrade] = useState([]);
+  const [modulesByGradeAux, setModulesByGradeAux] = useState([]);
   const [editing, setEditing] = useState(false);
   const [isShowModules, setIsShowModules] = useState(false);
   const [listDataModule, setListDataModule] = useState([]);
   const [codeModule, setCodeModule] = useState('');
+  const [docPerson, setDocPerson] = useState('')
   const { openAlert } = useAlertDispatch();
   const errorHandler = useErrorHandler();
 
@@ -92,11 +94,38 @@ export default function Home() {
     try {
       const result = await API.getModulesByGrades();
       console.log('ModulesByGrades', result);
-      setModulesByGrade(result);
+      setModulesByGradeAux(JSON.parse(JSON.stringify(result)))
+      setModulesByGrade(filterModulePrerequisites(result));
     } catch (error) {
       errorHandler(error);
     }
   };
+
+  const filterModulePrerequisites = (module, listPre = []) => {
+    let moduleResponse = module || {};
+
+    try {
+      Object.entries(moduleResponse).forEach(([key, firstLevel]) => {
+        Object.entries(firstLevel).forEach(([subKey, secondLevel]) => {
+          const filteredSecondLevel = secondLevel.filter(module => {
+            console.log(module.nombre, listPre, listPre.includes(module.nombre), "aaaaaaaa")
+            return (
+              listPre.includes(module.prerrequisitos) ||
+              module.prerrequisitos === ''
+            )
+          });
+
+          if (filteredSecondLevel.length > 0) {
+            moduleResponse[key][subKey] = filteredSecondLevel;
+          }
+        });
+      });
+    } catch (e) {
+      console.log(e);
+    }
+    return moduleResponse;
+  };
+
 
   async function handleSearch(documentToSearch) {
     if (!documentToSearch) {
@@ -107,7 +136,7 @@ export default function Home() {
     } else {
       try {
         const result = await searchPerson(documentToSearch);
-      
+
         if (result !== 'null') {
           setIsShowModules(true)
           const modulesList = await API.listModulesByUser(documentToSearch)
@@ -115,7 +144,7 @@ export default function Home() {
             setEditing(true);
             setShowForm(true);
           }
-     
+
           if (modulesList?.length >= 1) {
             setListDataModule(modulesList)
           }
@@ -192,6 +221,32 @@ export default function Home() {
     setLoading(false);
   }
 
+  const getPrerequisitesUser = async (doc) => {
+    try {
+      const personResponse = await API.buscarPersona(doc);
+      const person = JSON.parse(personResponse || '{}')
+      const avaiblePeriods = await API.allPeriods();
+      let listAvaiblePrerequisite = []
+
+      if (!person || person === 'null' || !person?.data) return;
+      if (person?.data?.num_doc == '') return
+
+      Object.entries(person.data).forEach(([key, item]) => {
+        if (!avaiblePeriods.includes(key)) return
+        if (item === '-' || item === '') return
+        listAvaiblePrerequisite.push(item)
+      })
+
+      if (listAvaiblePrerequisite.length <= 0) return
+      const modulesFilter = filterModulePrerequisites(modulesByGradeAux, listAvaiblePrerequisite)
+      console.log(modulesFilter, 'modulesFilter')
+      setModulesByGrade(modulesFilter);
+      console.log(person, avaiblePeriods, listAvaiblePrerequisite, 'iniciamos la ultima parte')
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   useEffect(() => {
     authenticateCurrentUser();
     init();
@@ -202,9 +257,15 @@ export default function Home() {
       setStudentData(prevState => ({
         ...prevState,
         seleccion: codeModule,
-    }));
+      }));
     }
   }, [codeModule]);
+
+  useEffect(() => {
+    console.log('CHANGE DOC')
+    if (docPerson == '') return
+    getPrerequisitesUser(docPerson)
+  }, [docPerson])
 
   const showSearchBar = isUserAdmin || isDev;
   const showLoader = !isDev && loading;
@@ -213,7 +274,7 @@ export default function Home() {
     <>
       {showSearchBar && (
         <Navbar
-          sx={{ zIndex: 10}}
+          sx={{ zIndex: 10 }}
           loading={loading}
           handleSearch={handleSearch}
           handleRegister={handleRegister}
@@ -222,13 +283,13 @@ export default function Home() {
       {showLoader && <CircularIndeterminate />}
       {!showForm && !isShowModules && !showLoader && <Report data={reportData} />}
       {
-      (!showLoader && isShowModules && <ModuleSelect 
-        setEditing={setEditing}
-        setShowForm={setShowForm}
-        moduleData={listDataModule}
-        setIsShowModules={setIsShowModules}
-        setCodeModule={setCodeModule}
-       />)
+        (!showLoader && isShowModules && <ModuleSelect
+          setEditing={setEditing}
+          setShowForm={setShowForm}
+          moduleData={listDataModule}
+          setIsShowModules={setIsShowModules}
+          setCodeModule={setCodeModule}
+        />)
       }
       {!showLoader && showForm && (
         <FormPage
@@ -239,6 +300,7 @@ export default function Home() {
             studentData,
             modulesByArea,
             modulesByGrade,
+            setDocPerson
           }}
         />
       )}
