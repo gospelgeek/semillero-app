@@ -88,7 +88,6 @@ function registerStudentCurrentPeriod(data) {
   Logger.log('=============Registering In Current Period===========');
   Logger.log('Datos en registerStudentCurrentPeriod: ');
   Logger.log(data);
-
   addStudentToModuleSheet(data.seleccion, data);
   const inscritossheet = getSheetFromSpreadSheet(
     getCurrentPeriod().link,
@@ -182,8 +181,8 @@ function getDataForRegistering(formData, currentStudentData) {
   if (form.inscrito_anterior === 'SI') {
     form.inscrito_anterior = form.curso_anterior;
   }
-  const selectedModule = String(form.seleccion)
-  const periods = getPersonPeriods(selectedModule, currentStudentData);
+  const selectedModule = validateModule(form.seleccion)
+  const periods = getPersonPeriods(String(form.seleccion), currentStudentData);
 
   const data = mergeObjects(
     form,
