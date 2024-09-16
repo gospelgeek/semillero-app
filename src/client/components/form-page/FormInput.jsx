@@ -26,6 +26,7 @@ export default function FormInput({
   handleBlur,
   errors,
   touched,
+  placeholder
 }) {
   const value__ = ((values[name] !== undefined && values[name] !== null)? (typeof values[name] === 'string')? (values[name]).toLowerCase() : values[name] : '')
 
@@ -42,6 +43,7 @@ export default function FormInput({
       value={value__}
       type={type}
       error={!!touched[name] && !!errors[name]}
+      placeholder={placeholder || ''}
       variant="outlined"
       InputProps={{
         readOnly,

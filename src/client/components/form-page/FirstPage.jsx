@@ -30,7 +30,7 @@ import {
 
 const createEmail = () => window.open(GOOGLE_URL);
 
-export default function FirstPage({setDocPerson, modules, ...formik }) {
+export default function FirstPage({ setDocPerson, modules, ...formik }) {
   const [avatar, setAvatar] = useState(null);
   const errorHandler = useErrorHandler();
   const [IsDesabilitado, setIsDesabilitado] = useState(false);
@@ -55,19 +55,19 @@ export default function FirstPage({setDocPerson, modules, ...formik }) {
 
   React.useEffect(() => {
     const { discapacidad } = formik.values;
-    if(discapacidad === 'SI'){
+    if (discapacidad === 'SI') {
       setIsDesabilitado(true);
     }
     else {
       setIsDesabilitado(false);
     }
-  } , [formik.values.discapacidad]);
+  }, [formik.values.discapacidad]);
 
   React.useEffect(() => {
     const { num_doc } = formik.values;
     if (num_doc == '') return
     setDocPerson(num_doc)
-  } , [formik.values.num_doc]);
+  }, [formik.values.num_doc]);
 
   React.useEffect(() => {
     const { genero } = formik.values;
@@ -75,14 +75,14 @@ export default function FirstPage({setDocPerson, modules, ...formik }) {
     const isGenderOther = genero === 'OTRO'
 
     setIsOtherGender(isGenderOther);
-    element.style.display = isGenderOther? "none": "block"
+    element.style.display = isGenderOther ? "none" : "block"
   }, [formik.values.genero]);
 
   return (
     <Card useRight={false}>
-      <Grid sx={{ position: 'relative'}}
-            className='_container_principal' container spacing={3}>
-      {/* <div className='_container_logo_form'>
+      <Grid sx={{ position: 'relative' }}
+        className='_container_principal' container spacing={3}>
+        {/* <div className='_container_logo_form'>
         <img src="https://drive.google.com/uc?id=1N-iOqjZ-CNibL9txy7ULUCt3jXw_DQXc" alt="logo semillero" />
       </div> */}
         <Grid
@@ -130,14 +130,20 @@ export default function FirstPage({setDocPerson, modules, ...formik }) {
         <Grid item md={4}>
           <FormInput label="Ciudad" name={'ciudad_doc'} {...formik} />
         </Grid>
-        <Grid item md={12}>
-          <Alert severity="warning">
-            Solo se permite el registro con un correo gmail o correounivalle.
-          </Alert>
-        </Grid>
+        {/* {
+          (formik.touched.email && formik.errors.email ||
+            formik.touched.confirmEmail && formik.errors.confirmEmail
+          ) && (
+            <Grid item md={12}>
+              <Alert severity="warning">
+                Solo se permite el registro con un correo gmail o correounivalle.
+              </Alert>
+            </Grid>
+          )} */}
         <Grid item md={7}>
           <FormInput
             type="email"
+            placeholder={'Solo se permite el registro con un correo gmail o correounivalle.'}
             label="Correo Electronico"
             name={'email'}
             {...formik}
@@ -160,6 +166,7 @@ export default function FirstPage({setDocPerson, modules, ...formik }) {
           <FormInput
             type="email"
             label="Confirma Correo"
+            placeholder={'Solo se permite el registro con un correo gmail o correounivalle.'}
             name={'confirmEmail'}
             {...formik}
           />
@@ -191,7 +198,7 @@ export default function FirstPage({setDocPerson, modules, ...formik }) {
                 name={'otro_genero'}
                 {...formik}
               />
-          </Grid>
+            </Grid>
           )
         }
         <Grid id="space_of_genero" item md={6}></Grid>
