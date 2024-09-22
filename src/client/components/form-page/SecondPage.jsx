@@ -24,6 +24,7 @@ export default function SecondPage({
   handlePrevPage,
   handleSubmit,
   isUserAdmin,
+  validEmail,
   modules,
   ...formik
 }) {
@@ -211,6 +212,7 @@ export default function SecondPage({
 
       <Card useRight={false}>
         <Documents
+          validEmail={validEmail}
           errors={formik.errors}
           values={formik.values}
           isSubmitting={formik.isSubmitting}

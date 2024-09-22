@@ -27,6 +27,7 @@ export default function FormPage({
 }) {
   const [accepted, setAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [validEmail, setValidEmail] = useState(false)
   const { openAlert } = useAlertDispatch();
   const errorHandler = useErrorHandler();
 
@@ -146,11 +147,13 @@ export default function FormPage({
     isUserAdmin,
     modulesByArea,
     modulesByGrade,
+    validEmail,
     ...inputProps,
   };
 
   const formPropsFirstPage = {
     setDocPerson,
+    setValidEmail,
     ...formProps,
   }
 

@@ -26,11 +26,11 @@ export default function FormInput({
   handleBlur,
   errors,
   touched,
-  placeholder
+  placeholder,
 }) {
   const value__ = ((values[name] !== undefined && values[name] !== null)? (typeof values[name] === 'string')? (values[name]).toLowerCase() : values[name] : '')
-
   const isEmail = type === 'email';
+
   return (
     <TextField
       fullWidth

@@ -105,6 +105,16 @@ function registerStudentCurrentPeriod(data) {
   if (lastRowRes > lastRow) {
     response = 'exito';
   }
+  else {
+    const inscritosRecovery = getSheetFromSpreadSheet(
+      getCurrentPeriod().link,
+      'RECOVERY'
+    );
+    const lastRowRec = inscritosRecovery.getLastRow();
+    inscritosRecovery.appendRow(personValues);
+    const lastRowResRec = inscritosRecovery.getLastRow();
+    if (lastRowResRec > lastRowRec) response = 'exito' 
+  }
 
   Logger.log('=============END Registering In Current Period===========');
   return response;

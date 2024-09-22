@@ -17,6 +17,7 @@ export default function Documents({
   modulesByArea,
   handleSubmit,
   setFieldValue,
+  validEmail
 }) {
   const { grado, estamento, convenio, curso } = values;
 
@@ -143,7 +144,7 @@ export default function Documents({
           variant="contained"
           type="submit"
           onClick={handleSubmit}
-          disabled={isSubmitting || thereAreErrors}
+          disabled={isSubmitting || !validEmail || thereAreErrors}
         >
           {isSubmitting ? 'Enviando...' : 'Enviar'}
         </Button>

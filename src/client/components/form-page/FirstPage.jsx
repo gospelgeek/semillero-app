@@ -27,14 +27,38 @@ import {
   DiscapacidadOptionsAll
 } from './form-settings';
 // import { doc } from 'prettier';
+import TextField from '@mui/material/TextField';
 
 const createEmail = () => window.open(GOOGLE_URL);
 
-export default function FirstPage({ setDocPerson, modules, ...formik }) {
+const DoNotCopyPaste = e => e.preventDefault();
+
+const EmailHandlers = {
+  onCopy: DoNotCopyPaste,
+  onPaste: DoNotCopyPaste,
+  onCut: DoNotCopyPaste,
+  inputProps: { style: { textTransform: 'lowercase' } },
+};
+
+export default function FirstPage({ setValidEmail, setDocPerson, modules, ...formik }) {
+  const { setFieldValue } = formik;
+
   const [avatar, setAvatar] = useState(null);
   const errorHandler = useErrorHandler();
   const [IsDesabilitado, setIsDesabilitado] = useState(false);
   const [IsOtherGender, setIsOtherGender] = useState(false);
+  const [labelErrorEmail, setLabelErrorEmail] = useState({
+    email: '',
+    confirmEmail: ''
+  });
+  const [errorEmail, setErrorEmail] = useState({
+    email: false,
+    confirmEmail: false
+  });
+  const [valuesEmail, setValuesEmail] = useState({
+    email: '',
+    confirmEmail: ''
+  });
 
   const hasAnotherEPS = formik?.values?.eps === 'OTRA';
   const caliIsCali = formik?.values?.ciudad_res === 'Cali';
@@ -51,6 +75,59 @@ export default function FirstPage({ setDocPerson, modules, ...formik }) {
     } catch (error) {
       errorHandler(error);
     }
+  }
+
+  const resetStates = () => {
+    setValidEmail(true)
+    setLabelErrorEmail((prev) => ({
+        email: '',
+        confirmEmail: ''
+    }))
+    
+    setErrorEmail((prev) => ({
+        email: false,
+        confirmEmail: false
+    }))
+  }
+
+  const handlerValidateEmail = (e, keyValidate) => {
+    const value_ = e.target.value,
+          name_ = e.target.name,
+          regLocalPart = /^[a-zA-Z0-9]+([.-]?[a-zA-Z0-9]+)*$/,
+          regexDomain = /^(gmail|correounivalle.edu)\.co(m)?$/,
+          isEqualEmail = value_ !== valuesEmail[keyValidate],
+          [localpart, domain] = value_.split('@');
+
+    let isValidLocalPart = regLocalPart.test(localpart)
+    let isValidDomain = regexDomain.test(domain)
+    let textError = ''
+   
+    if (isEqualEmail) textError = 'Los correos no coinciden'
+    if (!isValidLocalPart) textError = 'El correo electrónico debe ser una dirección válida sin caracteres especiales'
+    if (!isValidDomain && isValidLocalPart) textError = 'El correo debe ser de gmail o correounivalle'
+    if (value_ === '') textError = 'Este campo es requerido'
+   
+    if ((isValidLocalPart && isValidDomain) && !isEqualEmail) {
+      setFieldValue('email', value_);
+    }
+
+    setLabelErrorEmail((prev) => ({
+      ...prev,
+      [name_]: textError
+    }))
+    
+    setErrorEmail((prev) => ({
+      ...prev,
+      [name_]: !(isValidLocalPart && isValidDomain && !isEqualEmail)
+    }))
+    
+    setValuesEmail((prev) => ({
+      ...prev,
+      [name_]: value_
+    }))
+
+    setValidEmail(false)    
+    if (!isEqualEmail) resetStates()
   }
 
   React.useEffect(() => {
@@ -141,12 +218,31 @@ export default function FirstPage({ setDocPerson, modules, ...formik }) {
             </Grid>
           )} */}
         <Grid item md={7}>
-          <FormInput
+          {/* <FormInput
             type="email"
             placeholder={'Solo se permite el registro con un correo gmail o correounivalle.'}
             label="Correo Electronico"
             name={'email'}
+            isOtherValid={errorEmail}
+            handleChange={() => { }}
+            helperText={labelErrorEmail}
+            handleBlur={handlerValidateEmail}
+            handlerOnInput={handlerValidateEmail}
             {...formik}
+          /> */}
+          <TextField
+            fullWidth
+            name='email'
+            label="Correo Electronico"
+            required={true}
+            onBlur={(e) => handlerValidateEmail(e,'confirmEmail')}
+            onInput={(e) => handlerValidateEmail(e,'confirmEmail')}
+            type="email"
+            error={errorEmail.email}
+            placeholder={'Solo se permite el registro con un correo gmail o correounivalle.'}
+            variant="outlined"
+            helperText={labelErrorEmail.email}
+            {...EmailHandlers}
           />
         </Grid>
         <Grid
@@ -163,12 +259,27 @@ export default function FirstPage({ setDocPerson, modules, ...formik }) {
           </Button>
         </Grid>
         <Grid item md={6}>
-          <FormInput
+          {/* <FormInput
             type="email"
             label="Confirma Correo"
             placeholder={'Solo se permite el registro con un correo gmail o correounivalle.'}
             name={'confirmEmail'}
             {...formik}
+          /> */}
+          <TextField
+            fullWidth
+            name='confirmEmail'
+            keyValidate='email'
+            label="Confirma Correo"
+            required={true}
+            onBlur={(e) => handlerValidateEmail(e,'email')}
+            onInput={(e) => handlerValidateEmail(e,'email')}
+            type="email"
+            error={errorEmail.confirmEmail}
+            placeholder={'Solo se permite el registro con un correo gmail o correounivalle.'}
+            variant="outlined"
+            helperText={labelErrorEmail.confirmEmail}
+            {...EmailHandlers}
           />
         </Grid>
         <Grid item md={6}></Grid>

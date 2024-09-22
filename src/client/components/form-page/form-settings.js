@@ -198,7 +198,9 @@ const Texts = {
   notIdentical: 'Los correos no coinciden',
   invalidFileSize: 'El archivo es demasiado grande, el máximo es 2MB',
   invalidFileType: 'El tipo de archivo es invalido',
-  invalidEmail: 'El correo debe ser gmail o correounivalle',
+  invalidEmail: 'El correo electrónico debe ser una dirección válida sin caracteres especiales y debe pertenecer a Gmail o a correounivalle.edu',
+  invalidEmailFormat: 'El correo contiene caracteres inválidos',
+  invalidEmailDomain: 'El correo debe ser de Gmail o Univalle',
 };
 
 const UnivalleRegex = /^[\w.+-]+@(gmail|correounivalle.edu)\.co(m)?$/;
@@ -216,13 +218,10 @@ export const validationSchema = Yup.object({
   tipo_doc: Yup.string().required(Texts.requiredFields),
   ciudad_doc: Yup.string().required(Texts.requiredFields),
   num_doc: Yup.string().required(Texts.requiredFields),
-  email: Yup.string()
-    .matches(UnivalleRegex, Texts.invalidEmail)
-    .required(Texts.requiredFields),
-  confirmEmail: Yup.string()
-    .matches(UnivalleRegex, Texts.invalidEmail)
-    .required(Texts.requiredFields)
-    .oneOf([Yup.ref('email')], Texts.notIdentical),
+  // email: Yup.string()
+  //   .required(Texts.requiredFields),
+  // confirmEmail: Yup.string()
+  //   .required(Texts.requiredFields),
   genero: Yup.string().required(Texts.requiredFields),
   nacimiento: Yup.string().required(Texts.requiredFields),
   tel_fijo: Yup.string(),
