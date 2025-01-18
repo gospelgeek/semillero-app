@@ -27,7 +27,7 @@ export default function FormPage({
 }) {
   const [accepted, setAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [validEmail, setValidEmail] = useState(false)
+  const [validEmail, setValidEmail] = useState(true) // True, when this field is no valited
   const { openAlert } = useAlertDispatch();
   const errorHandler = useErrorHandler();
 

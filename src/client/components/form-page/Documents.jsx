@@ -33,6 +33,8 @@ export default function Documents({
   const isGraduated = grado === 'EGRESADO';
   // const isLastPhase = grado === 11 || isGraduated;
 
+  const [isDisabled,setDisabled] = React.useState(true)
+
   function handleChange(name) {
     return event => {
       const [file] = event.currentTarget.files || [];
@@ -93,6 +95,20 @@ export default function Documents({
 
   const thereAreErrors = !!Object.keys(errors).length;
 
+  const isValidEmail = () => {
+    const thereErrors = validEmail || thereAreErrors
+    return isSubmitting || thereErrors
+  }
+
+  React.useEffect(() => {
+      console.log('isSubmitting || (!validEmail && thereAreErrors)',isSubmitting || (validEmail && thereAreErrors))
+      console.log("thereAreErrors",thereAreErrors)
+      console.log("validEmail",validEmail)
+      console.log(isSubmitting,"isSubmitting")
+      setDisabled(isValidEmail())
+
+  },[isSubmitting,validEmail,thereAreErrors])
+
   return (
     <Grid container spacing={3}>
       <Grid item md={12}>
@@ -144,7 +160,7 @@ export default function Documents({
           variant="contained"
           type="submit"
           onClick={handleSubmit}
-          disabled={isSubmitting || !validEmail || thereAreErrors}
+          disabled={isDisabled}
         >
           {isSubmitting ? 'Enviando...' : 'Enviar'}
         </Button>

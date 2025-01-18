@@ -78,7 +78,6 @@ export default function FirstPage({ setValidEmail, setDocPerson, modules, ...for
   }
 
   const resetStates = () => {
-    setValidEmail(true)
     setLabelErrorEmail((prev) => ({
         email: '',
         confirmEmail: ''
@@ -109,6 +108,11 @@ export default function FirstPage({ setValidEmail, setDocPerson, modules, ...for
    
     if ((isValidLocalPart && isValidDomain) && !isEqualEmail) {
       setFieldValue('email', value_);
+      setFieldValue('confirmEmail', value_);
+      setValidEmail(false)
+    }
+    else {
+      setValidEmail(true)
     }
 
     setLabelErrorEmail((prev) => ({
@@ -125,9 +129,8 @@ export default function FirstPage({ setValidEmail, setDocPerson, modules, ...for
       ...prev,
       [name_]: value_
     }))
-
-    setValidEmail(false)    
-    if (!isEqualEmail) resetStates()
+    
+    if (!isEqualEmail) resetStates() // Ok
   }
 
   React.useEffect(() => {
