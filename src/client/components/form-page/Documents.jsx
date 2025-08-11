@@ -20,7 +20,7 @@ export default function Documents({
   validEmail
 }) {
   const { grado, estamento, convenio, curso } = values;
-
+  
   const isPublic = estamento === 'PUBLICO';
   const isCoverage = estamento === 'COBERTURA';
   const isFresita = estamento === 'PRIVADO';
@@ -28,8 +28,8 @@ export default function Documents({
   const isCapucho = convenio === 'RELACION_UNIVALLE';
   const isScholar = convenio === 'BECADOS';
   const isSchoolAgreement = convenio === 'CONVENIO_COLEGIO';
-  const isDocente = convenio === 'red_docente'
-
+  const isDocente = convenio === 'red_docente';
+  const isGraduatedEgresado = convenio === 'EGRESADO';
   const isGraduated = grado === 'EGRESADO';
   // const isLastPhase = grado === 11 || isGraduated;
 
@@ -84,6 +84,11 @@ export default function Documents({
       name: 'cartaSolicitud',
       label: 'Carta Solicitud',
       display: isScholar,
+    },
+    {
+      name: 'Acta o Diploma de Graduación Univalle',
+      label: 'Acta o Diploma Univalle',
+      display: isGraduatedEgresado,
     },
     {
       name: 'carnedocente',

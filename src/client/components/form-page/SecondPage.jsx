@@ -76,6 +76,7 @@ export default function SecondPage({
               [
                 { value: 'PARTICULAR', label: 'PARTICULAR' },
                 { value: 'RELACION_UNIVALLE', label: 'RELACIÓN UNIVALLE' },
+                { value: 'EGRESADO', label: 'EGRESADO UNIVALLE' },
                 ...(isUserAdmin
                   ? [
                       { value: 'BECADOS', label: 'BECADOS' },
