@@ -5,7 +5,8 @@ export const getModulePrice = (choice, modules, { estamento, convenio }) => {
   if (estamento === 'PUBLICO') price = module?.precio_publico;
   if (estamento === 'COBERTURA') price = module?.precio_cobertura;
   if (convenio === 'RELACION_UNIVALLE') price = module?.precio_univalle;
-  if (convenio === 'EGRESADO') price = module?.precio_egresado;
+  if (estamento === 'PRIVADO' && convenio === 'EGRESADO') price = module?.precio_egresado;
+  if (estamento === 'PRIVADO' && convenio === 'FONVALLE') price = module?.precio_egresado;
   if (convenio === 'BECADOS') {
     price = 0;
   }
