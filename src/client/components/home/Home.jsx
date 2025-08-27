@@ -59,10 +59,27 @@ export default function Home() {
       });
     }
     if (person.state === 'antiguo') {
-      return openAlert({
+      openAlert({
         message: Messages.oldStudent,
         variant: 'warning',
       });
+      const currentPeriodModule = person.data[currentPeriod];
+      const selectedModule = modules.find(
+        m => m.nombre === currentPeriodModule
+      );
+      console.log(person.data)
+      const newData = {
+        ...person.data,
+        inscrito_anterior: "SI",
+        convenio: null,
+        val_consignar: null,
+        val_consignado: null,
+        dif_consignado: null,
+        recibo_consignacion: null,
+        fecha_consignacion: null,
+        seleccion: selectedModule?.codigo,
+      };
+      return setStudentData(newData);
     }
     if (person.state === 'actual') {
       const currentPeriodModule = person.data[currentPeriod];
@@ -279,7 +296,7 @@ export default function Home() {
       )}
       {showLoader && <CircularIndeterminate />}
       {!showForm && !isShowModules && !showLoader && <Report data={reportData} />}
-      {
+      {/* {
         (!showLoader && isShowModules && <ModuleSelect
           setEditing={setEditing}
           setShowForm={setShowForm}
@@ -287,7 +304,7 @@ export default function Home() {
           setIsShowModules={setIsShowModules}
           setCodeModule={setCodeModule}
         />)
-      }
+      } */}
       {!showLoader && showForm && (
         <FormPage
           {...{
